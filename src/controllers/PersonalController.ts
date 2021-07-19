@@ -3,7 +3,7 @@ import { classToClass } from "class-transformer";
 
 import { CreateUserService } from "../services/CreateUserService";
 
-export class UsersController {
+export class PersonalController {
 
 	public async create(req: Request, res: Response): Promise<Response> {
 		const {
@@ -26,7 +26,7 @@ export class UsersController {
 					email,
 					password,
 				},
-				userAccessLevel: 'user'
+				userAccessLevel: 'personal'
 			})
 	
 			return res.json(classToClass(user))

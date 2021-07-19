@@ -1,9 +1,9 @@
 import {
 	Column,
-	CreateDateColumn,
 	Entity,
 	ObjectID,
 	ObjectIdColumn,
+	CreateDateColumn,
 	UpdateDateColumn
 } from 'typeorm'
 import { Exclude } from 'class-transformer'
