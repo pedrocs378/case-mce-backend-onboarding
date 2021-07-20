@@ -8,6 +8,7 @@ export class PersonalController {
 	public async create(req: Request, res: Response): Promise<Response> {
 		const {
 			name,
+			phone,
 			email,
 			password,
 			password_confirmation
@@ -23,6 +24,7 @@ export class PersonalController {
 			const user = await createUser.execute({
 				user: {
 					name,
+					phone,
 					email,
 					password,
 				},

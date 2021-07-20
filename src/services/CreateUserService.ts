@@ -6,6 +6,7 @@ import { User } from "../database/schemas/User";
 type CreateUserProps = {
 	user: {
 		name: string
+		phone: string
 		email: string
 		password: string
 	},
