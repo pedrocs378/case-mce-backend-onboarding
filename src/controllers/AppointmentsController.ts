@@ -61,18 +61,4 @@ export class AppointmentsController {
 
 		return res.json(appointment)
 	}
-
-	public async index(req: Request, res: Response): Promise<Response> {
-		const { id } = req.user
-
-		const usersRepository = getMongoRepository(User)
-
-		const user = await usersRepository.findOne(id)
-
-		if (!user) {
-			return res.status(400).json({ message: 'Usuário não existente' })
-		}
-
-		return res.json(user)
-	}
 }

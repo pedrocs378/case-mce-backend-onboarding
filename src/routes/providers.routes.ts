@@ -8,6 +8,6 @@ const appointmentsController = new AppointmentsController()
 
 const providersRouter = express.Router()
 
-providersRouter.get('/', ensureAuthenticated, appointmentsController.index)
+providersRouter.get('/', ensureAuthenticated, appointmentsController.create)
 
 export { providersRouter }
