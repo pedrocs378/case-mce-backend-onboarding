@@ -11,6 +11,7 @@ import authConfig from "../config/auth";
 export class SessionsController {
 
 	public async create(req: Request, res: Response): Promise<Response> {
+		const { user_type } = req.params
 		const { email, password } = req.body
 
 		try {
@@ -28,6 +29,10 @@ export class SessionsController {
 
 			if (!isPasswordMatch) {
 				return res.status(401).json({ message: 'Email ou senha está incorreto' })
+			}
+
+			if (user.accessLevel.includes('user') && user_type === 'personal') {
+				return res.status(401).json({ message: 'É necessario ser um Personal Trainer para acessar' })
 			}
 
 			const { expiresIn, secret } = authConfig.jwt

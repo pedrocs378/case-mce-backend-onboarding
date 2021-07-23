@@ -6,6 +6,6 @@ const sessionsController = new SessionsController()
 
 const sessionsRouter = express.Router()
 
-sessionsRouter.post('/', sessionsController.create)
+sessionsRouter.post('/:user_type', sessionsController.create)
 
 export { sessionsRouter }
