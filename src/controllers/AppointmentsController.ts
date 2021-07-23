@@ -21,7 +21,7 @@ export class AppointmentsController {
 			return res.status(400).json({ message: 'Não é possivel agendar um horário com você mesmo' })
 		}
 
-		if (getHours(appointmentDate) < 8 || getHours(appointmentDate) > 20) {
+		if (getHours(appointmentDate) < 8 || getHours(appointmentDate) > 19) {
 			return res.status(400).json({ message: 'Só é possivel agendar um horário das 08:00 até 20:00' })
 		}
 

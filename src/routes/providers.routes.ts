@@ -1,13 +1,20 @@
 import express from 'express'
 
-import { AppointmentsController } from '../controllers/AppointmentsController'
+import { ProvidersController } from '../controllers/ProvidersController'
+import { ProviderAvailableHoursController } from '../controllers/ProviderAvailableHoursController'
 
 import { ensureAuthenticated } from '../middlewares/ensureAuthenticated'
 
-const appointmentsController = new AppointmentsController()
+const providersController = new ProvidersController()
+const providerAvailableHoursController = new ProviderAvailableHoursController()
 
 const providersRouter = express.Router()
 
-providersRouter.get('/', ensureAuthenticated, appointmentsController.create)
+providersRouter.get('/', ensureAuthenticated, providersController.index)
+providersRouter.get(
+	'/:provider_id/available_day_hours', 
+	ensureAuthenticated, 
+	providerAvailableHoursController.index
+)
 
 export { providersRouter }
