@@ -50,11 +50,12 @@ export class ProviderAvailableHoursController {
 
 			const compareDate = new Date(date.year, date.month - 1, date.day, hour)
 
+			const available = !hasAppointmentinHour && isAfter(compareDate, currentDate)
+
 			return {
 				hour,
-				available: hasAppointmentinHour 
-					? hasAppointmentinHour.user
-					: isAfter(compareDate, currentDate) ? true : false
+				available,
+				user: hasAppointmentinHour ? hasAppointmentinHour.user : null
 			}
 		})
 
