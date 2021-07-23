@@ -53,7 +53,11 @@ export class AppointmentsController {
 
 		const appointment = appointmentsRepository.create({
 			provider_id: provider.id,
-			user_id: user.id,
+			user: {
+				id: user.id,
+				name: user.name,
+				phone: user.phone
+			},
 			date: appointmentDate
 		})
 

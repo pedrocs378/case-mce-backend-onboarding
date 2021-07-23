@@ -1,6 +1,12 @@
 import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } from "typeorm"
 import { ObjectID } from "mongodb"
 
+interface User {
+	id: ObjectID
+	name: string
+	phone: string
+}
+
 @Entity('appointments')
 export class Appointment {
 	@ObjectIdColumn()
@@ -10,7 +16,7 @@ export class Appointment {
 	provider_id: ObjectID
 
 	@Column()
-	user_id: ObjectID
+	user: User
 
 	@Column('timestamp with time zone')
 	date: Date
