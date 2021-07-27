@@ -5,6 +5,7 @@ import { sessionsRouter } from './sessions.routes'
 import { profileRouter } from './profile.routes'
 import { appointmentsRouter } from './appointments.routes'
 import { providersRouter } from './providers.routes'
+import { notificationsRouter } from './notifications.routes'
 
 const routes = express.Router()
 
@@ -14,5 +15,7 @@ routes.use('/sessions', sessionsRouter)
 routes.use('/profile', profileRouter)
 routes.use('/appointments', appointmentsRouter)
 routes.use('/providers', providersRouter)
+
+routes.use('/notifications', notificationsRouter)
 
 export { routes }

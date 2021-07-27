@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { getMongoRepository } from "typeorm";
-import { getHours, isBefore, startOfHour } from "date-fns";
+import { getHours, isBefore, startOfHour, format } from "date-fns";
 
 import { User } from "../database/schemas/User";
 import { Appointment } from "../database/schemas/Appointment";
+import { Notification } from "../database/schemas/Notification";
 
 export class AppointmentsController {
 
@@ -27,6 +28,7 @@ export class AppointmentsController {
 
 		const usersRepository = getMongoRepository(User)
 		const appointmentsRepository = getMongoRepository(Appointment)
+		const notificationsRepository = getMongoRepository(Notification)
 
 		const user = await usersRepository.findOne(id)
 		const provider = await usersRepository.findOne(provider_id)
@@ -62,6 +64,15 @@ export class AppointmentsController {
 		})
 
 		await appointmentsRepository.save(appointment)
+
+		const dateFormatted = format(appointmentDate, "HH'h ('dd/MM')'")
+
+		const notification = notificationsRepository.create({
+			recipient_id: provider_id,
+			content: `${user.name} reservou às ${dateFormatted}`
+		})
+
+		notificationsRepository.save(notification)
 
 		return res.json(appointment)
 	}
