@@ -69,7 +69,8 @@ export class AppointmentsController {
 
 		const notification = notificationsRepository.create({
 			recipient_id: provider_id,
-			content: `${user.name} reservou às ${dateFormatted}`
+			content: `${user.name} reservou às ${dateFormatted}`,
+			read: false
 		})
 
 		notificationsRepository.save(notification)

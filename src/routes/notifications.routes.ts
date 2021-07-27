@@ -9,5 +9,6 @@ const notificationsController = new NotificationsController()
 const notificationsRouter = express.Router()
 
 notificationsRouter.get('/', ensureAuthenticated, notificationsController.index)
+notificationsRouter.patch('/:notification_id', ensureAuthenticated, notificationsController.update)
 
 export { notificationsRouter }
