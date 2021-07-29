@@ -5,6 +5,7 @@ interface User {
 	id: ObjectID
 	name: string
 	phone: string
+	avatar?: string | undefined
 }
 
 @Entity('appointments')
@@ -13,7 +14,7 @@ export class Appointment {
 	id: ObjectID
 
 	@Column()
-	provider_id: ObjectID
+	provider: User
 
 	@Column()
 	user: User
