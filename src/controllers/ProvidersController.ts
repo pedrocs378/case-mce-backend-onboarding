@@ -30,4 +30,17 @@ export class ProvidersController {
 
 		return res.json(providers)
 	}
+	public async show(req: Request, res: Response): Promise<Response> {
+		const { provider_id } = req.params
+
+		const usersRepository = getMongoRepository(User)
+
+		const provider = await usersRepository.findOne(provider_id)
+
+		if (!provider || !provider.accessLevel.includes('personal')) {
+			return res.status(400).json({ message: 'Personal não existente' })
+		}
+
+		return res.json(provider)
+	}
 }
