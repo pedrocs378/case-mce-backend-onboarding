@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
 import { getMongoRepository } from "typeorm";
 import { ObjectID } from 'mongodb'
+import { isAfter } from "date-fns";
 
 import { User } from "../database/schemas/User";
+import { Appointment } from "../database/schemas/Appointment";
 
 export class ProvidersController {
 
@@ -34,6 +36,7 @@ export class ProvidersController {
 		const { provider_id } = req.params
 
 		const usersRepository = getMongoRepository(User)
+		const appointmentsRepository = getMongoRepository(Appointment)
 
 		const provider = await usersRepository.findOne(provider_id)
 
@@ -41,6 +44,19 @@ export class ProvidersController {
 			return res.status(400).json({ message: 'Personal não existente' })
 		}
 
-		return res.json(provider)
+		const appointmentsWithProvider = await appointmentsRepository.find({
+			where: {
+				'provider.id': provider.id
+			}
+		})
+
+		const nextAppointments = appointmentsWithProvider.filter(appointment => {
+			return isAfter(new Date(appointment.date), Date.now())
+		})
+
+		return res.json({
+			...provider,
+			appointments: nextAppointments
+		})
 	}
 }
