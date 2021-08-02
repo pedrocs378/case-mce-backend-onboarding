@@ -23,7 +23,7 @@ export class UserAvatarController {
 		}
 
 		if (user.avatar) {
-			const filePath = path.resolve(uploadConfig.uploadsFolder, avatarFileName)
+			const filePath = path.resolve(uploadConfig.uploadsFolder, user.avatar)
 			
 			try {
 				await fs.promises.stat(filePath)
