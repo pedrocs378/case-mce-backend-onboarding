@@ -11,8 +11,14 @@ export class Appointment {
 	@Column(type => User)
 	provider: User
 
+	@Column()
+	provider_id: ObjectID
+
 	@Column(type => User)
 	user: User
+
+	@Column()
+	user_id: ObjectID
 
 	@Column('timestamp with time zone')
 	date: Date

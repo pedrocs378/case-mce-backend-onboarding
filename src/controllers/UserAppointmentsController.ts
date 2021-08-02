@@ -32,11 +32,17 @@ export class UserAppointmentsController {
 			.map(appointment => {
 				return {
 					...appointment,
-					provider: classToClass(appointment.provider),
-					user: classToClass(appointment.user)
+					provider: {
+						...appointment.provider,
+						id: appointment.provider_id
+					},
+					user: {
+						...appointment.user,
+						id: appointment.user_id
+					},
 				}
 			})
 
-		return res.json(nextAppointments)
+		return res.json(classToClass(nextAppointments))
 	}
 }

@@ -67,7 +67,9 @@ export class AppointmentsController {
 				phone: user.phone,
 				avatar: user.avatar
 			},
-			date: appointmentDate
+			date: appointmentDate,
+			provider_id: provider.id,
+			user_id: user.id
 		})
 
 		await appointmentsRepository.save(appointment)
@@ -82,12 +84,6 @@ export class AppointmentsController {
 
 		notificationsRepository.save(notification)
 
-		const appointmentResponse = {
-			...appointment,
-			provider: classToClass(appointment.provider),
-			user: classToClass(appointment.user)
-		}
-
-		return res.json(appointmentResponse)
+		return res.json(classToClass(appointment))
 	}
 }
