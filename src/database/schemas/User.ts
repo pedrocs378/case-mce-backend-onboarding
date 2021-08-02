@@ -6,7 +6,7 @@ import {
 	CreateDateColumn,
 	UpdateDateColumn
 } from 'typeorm'
-import { Exclude } from 'class-transformer'
+import { Exclude, Expose } from 'class-transformer'
 
 type AccessLevelTypes = 'personal' | 'user' | 'admin'
 
@@ -39,4 +39,11 @@ export class User {
 
 	@UpdateDateColumn()
 	updated_at: Date
+
+	@Expose({ name: 'avatar_url' })
+	getAvatarUrl(): string | null {
+		if (!this.avatar) return null
+
+		return `http://localhost:3333/files/${this.avatar}`
+	}
 }

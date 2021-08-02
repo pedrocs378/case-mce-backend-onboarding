@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { getMongoRepository } from "typeorm";
-import { hash, compare } from "bcryptjs";
+import { hash } from "bcryptjs";
+import { classToClass } from "class-transformer";
 
 import { User } from "../database/schemas/User";
 
@@ -41,6 +42,6 @@ export class ProfileController {
 
 		await usersRepository.save(user)
 
-		return res.json(user)
+		return res.json(classToClass(user))
 	}
 }

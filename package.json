@@ -15,6 +15,7 @@
     "@types/express": "^4.17.12",
     "@types/jsonwebtoken": "^8.5.2",
     "@types/mongodb": "^3.6.18",
+    "@types/multer": "^1.4.7",
     "@types/node": "^15.12.5",
     "@types/nodemailer": "^6.4.2",
     "ts-node-dev": "^1.1.6",
@@ -31,6 +32,7 @@
     "handlebars": "^4.7.7",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.9",
+    "multer": "^1.4.2",
     "nodemailer": "^6.6.2",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.34"

@@ -27,6 +27,6 @@ export function ensureAuthenticated(req: Request, res: Response, next: NextFunct
 
 		return next()
 	} catch {
-		return res.status(401).json({ message: 'Token inválido' })
+		return res.status(401).json({ message: 'Token inválido. Faça o login novamente.' })
 	}
 }

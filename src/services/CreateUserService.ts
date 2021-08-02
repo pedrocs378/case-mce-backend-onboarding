@@ -30,7 +30,8 @@ export class CreateUserService {
 		const createUser = usersRepository.create({
 			...user,
 			password: hashedPassword,
-			accessLevel: [userAccessLevel]
+			accessLevel: [userAccessLevel],
+			avatar: undefined
 		})
 
 		await usersRepository.save(createUser)
