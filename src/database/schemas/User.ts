@@ -44,6 +44,6 @@ export class User {
 	getAvatarUrl(): string | null {
 		if (!this.avatar) return null
 
-		return `http://localhost:3333/files/${this.avatar}`
+		return `http://192.168.0.103:3333/files/${this.avatar}`
 	}
 }
