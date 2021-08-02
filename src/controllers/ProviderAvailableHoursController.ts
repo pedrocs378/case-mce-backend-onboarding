@@ -23,7 +23,7 @@ export class ProviderAvailableHoursController {
 
 		const appointments = await appointmentsRepository.find({
 			where: {
-				provider_id: new ObjectID(provider_id)
+				'provider.id': new ObjectID(provider_id)
 			}
 		})
 
