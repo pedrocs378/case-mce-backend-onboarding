@@ -4,7 +4,6 @@ import { getMongoRepository } from "typeorm";
 import { getDate, getHours, getMonth, getYear, isAfter } from "date-fns";
 
 import { Appointment } from "../database/schemas/Appointment";
-import { User } from "../database/schemas/User";
 
 export class ProviderAvailableHoursController {
 
@@ -19,7 +18,6 @@ export class ProviderAvailableHoursController {
 		}
 
 		const appointmentsRepository = getMongoRepository(Appointment)
-		const usersRepository = getMongoRepository(User)
 
 		const appointments = await appointmentsRepository.find({
 			where: {
@@ -32,7 +30,7 @@ export class ProviderAvailableHoursController {
 
 			return (
 				getDate(appointmentDate) === date.day &&
-				getMonth(appointmentDate) === date.month &&
+				getMonth(appointmentDate) + 1 === date.month &&
 				getYear(appointmentDate) === date.year
 			)
 		})
