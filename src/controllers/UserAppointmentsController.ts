@@ -33,11 +33,11 @@ export class UserAppointmentsController {
 				return {
 					...appointment,
 					provider: {
-						...appointment.provider,
+						...classToClass(appointment.provider),
 						id: appointment.provider_id
 					},
 					user: {
-						...appointment.user,
+						...classToClass(appointment.user),
 						id: appointment.user_id
 					},
 				}
