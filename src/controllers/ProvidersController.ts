@@ -5,6 +5,7 @@ import { isAfter } from "date-fns";
 
 import { User } from "../database/schemas/User";
 import { Appointment } from "../database/schemas/Appointment";
+import { classToClass } from "class-transformer";
 
 export class ProvidersController {
 
@@ -30,7 +31,7 @@ export class ProvidersController {
 			}
 		})
 
-		return res.json(providers)
+		return res.json(classToClass(providers))
 	}
 	public async show(req: Request, res: Response): Promise<Response> {
 		const { provider_id } = req.params
@@ -38,21 +39,23 @@ export class ProvidersController {
 		const usersRepository = getMongoRepository(User)
 		const appointmentsRepository = getMongoRepository(Appointment)
 
-		const provider = await usersRepository.findOne(provider_id)
+		const providerData = await usersRepository.findOne(provider_id)
 
-		if (!provider || !provider.accessLevel.includes('personal')) {
+		if (!providerData || !providerData.accessLevel.includes('personal')) {
 			return res.status(400).json({ message: 'Personal não existente' })
 		}
 
 		const appointmentsWithProvider = await appointmentsRepository.find({
 			where: {
-				'provider.id': provider.id
+				'provider.id': providerData.id
 			}
 		})
 
 		const nextAppointments = appointmentsWithProvider.filter(appointment => {
 			return isAfter(new Date(appointment.date), Date.now())
 		})
+
+		const provider = classToClass(providerData)
 
 		return res.json({
 			...provider,
