@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { getMongoRepository } from "typeorm";
+import { classToClass } from "class-transformer";
 import { isAfter } from 'date-fns'
 
 import { User } from "../database/schemas/User";
@@ -24,9 +25,17 @@ export class UserAppointmentsController {
 			}
 		})
 
-		const nextAppointments = appointments.filter(appointment => {
-			return isAfter(new Date(appointment.date), Date.now())
-		})
+		const nextAppointments = appointments
+			.filter(appointment => {
+				return isAfter(new Date(appointment.date), Date.now())
+			})
+			.map(appointment => {
+				return {
+					...appointment,
+					provider: classToClass(appointment.provider),
+					user: classToClass(appointment.user)
+				}
+			})
 
 		return res.json(nextAppointments)
 	}

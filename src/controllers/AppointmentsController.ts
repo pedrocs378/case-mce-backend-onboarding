@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { getMongoRepository } from "typeorm";
+import { classToClass } from "class-transformer";
 import { getHours, isBefore, startOfHour, format } from "date-fns";
 
 import { User } from "../database/schemas/User";
@@ -81,6 +82,12 @@ export class AppointmentsController {
 
 		notificationsRepository.save(notification)
 
-		return res.json(appointment)
+		const appointmentResponse = {
+			...appointment,
+			provider: classToClass(appointment.provider),
+			user: classToClass(appointment.user)
+		}
+
+		return res.json(appointmentResponse)
 	}
 }

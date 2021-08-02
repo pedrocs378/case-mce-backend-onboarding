@@ -1,22 +1,17 @@
 import { Column, CreateDateColumn, Entity, ObjectIdColumn, UpdateDateColumn } from "typeorm"
 import { ObjectID } from "mongodb"
 
-interface User {
-	id: ObjectID
-	name: string
-	phone: string
-	avatar?: string | undefined
-}
+import { User } from "./User"
 
 @Entity('appointments')
 export class Appointment {
 	@ObjectIdColumn()
 	id: ObjectID
 
-	@Column()
+	@Column(type => User)
 	provider: User
 
-	@Column()
+	@Column(type => User)
 	user: User
 
 	@Column('timestamp with time zone')
