@@ -6,6 +6,7 @@ import { profileRouter } from './profile.routes'
 import { appointmentsRouter } from './appointments.routes'
 import { providersRouter } from './providers.routes'
 import { notificationsRouter } from './notifications.routes'
+import { passwordRouter } from './password.routes'
 
 const routes = express.Router()
 
@@ -17,5 +18,7 @@ routes.use('/appointments', appointmentsRouter)
 routes.use('/providers', providersRouter)
 
 routes.use('/notifications', notificationsRouter)
+
+routes.use('/password', passwordRouter)
 
 export { routes }
