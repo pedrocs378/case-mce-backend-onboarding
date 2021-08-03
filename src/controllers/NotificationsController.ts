@@ -22,7 +22,9 @@ export class NotificationsController {
 			recipient_id: provider_id
 		})
 
-		return res.json(notifications)
+		const unreadNotification = notifications.filter(notification => !notification.read)
+
+		return res.json(unreadNotification)
 	}
 	public async update(req: Request, res: Response): Promise<Response> {
 		const { notification_id } = req.params
