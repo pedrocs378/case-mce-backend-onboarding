@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { getMongoRepository } from "typeorm";
+import { classToClass } from "class-transformer";
 import { ObjectID } from 'mongodb'
-import { isAfter } from "date-fns";
+import { isAfter, isBefore } from "date-fns";
 
 import { User } from "../database/schemas/User";
 import { Appointment } from "../database/schemas/Appointment";
-import { classToClass } from "class-transformer";
 
 export class ProvidersController {
 
@@ -51,9 +51,15 @@ export class ProvidersController {
 			}
 		})
 
-		const nextAppointments = appointmentsWithProvider.filter(appointment => {
-			return isAfter(new Date(appointment.date), Date.now())
-		})
+		const nextAppointments = appointmentsWithProvider
+			.filter(appointment => {
+				return isAfter(new Date(appointment.date), Date.now())
+			})
+			.sort((a, b) => {
+				if (isBefore(a.date, b.date)) return -1
+				if (isAfter(a.date, b.date)) return 1
+				else return 0
+			})
 
 		const provider = classToClass(providerData)
 

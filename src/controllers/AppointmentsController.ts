@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
 import { getMongoRepository } from "typeorm";
 import { classToClass } from "class-transformer";
-import { getHours, isBefore, startOfHour, format } from "date-fns";
+import { getHours, isBefore, startOfHour, format, startOfDay } from "date-fns";
 
 import { User } from "../database/schemas/User";
 import { Appointment } from "../database/schemas/Appointment";
 import { Notification } from "../database/schemas/Notification";
+import { AvailabilityHours } from "../database/schemas/AvailabilityHours";
 
 export class AppointmentsController {
 
@@ -30,6 +31,7 @@ export class AppointmentsController {
 		const usersRepository = getMongoRepository(User)
 		const appointmentsRepository = getMongoRepository(Appointment)
 		const notificationsRepository = getMongoRepository(Notification)
+		const availabilityHoursRepository = getMongoRepository(AvailabilityHours)
 
 		const user = await usersRepository.findOne(id)
 		const provider = await usersRepository.findOne(provider_id)
@@ -52,6 +54,23 @@ export class AppointmentsController {
 
 		if (hasAppointmentInSameDate) {
 			return res.status(400).json({ message: 'Este horário já está agendado' })
+		}
+
+		const appointmentDateStartDay = startOfDay(appointmentDate)
+
+		const hasHourAvailability = await availabilityHoursRepository.findOne({
+			provider_id: provider.id,
+			date: appointmentDateStartDay
+		})
+
+		if (hasHourAvailability) {
+			const availabilityHour = hasHourAvailability.available_hours.find(availableHour => {
+				return availableHour.hour === getHours(appointmentDate)
+			})
+
+			if (availabilityHour && !availabilityHour.available) {
+				return res.status(400).json({ message: 'Este horário está indisponivel' })
+			}
 		}
 
 		const appointment = appointmentsRepository.create({

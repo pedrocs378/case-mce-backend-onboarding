@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { getMongoRepository } from "typeorm";
 import { classToClass } from "class-transformer";
-import { isAfter } from 'date-fns'
+import { isAfter, isBefore } from 'date-fns'
 
 import { User } from "../database/schemas/User";
 import { Appointment } from "../database/schemas/Appointment";
@@ -41,6 +41,11 @@ export class UserAppointmentsController {
 						id: appointment.user_id
 					},
 				}
+			})
+			.sort((a, b) => {
+				if (isBefore(a.date, b.date)) return -1
+				if (isAfter(a.date, b.date)) return 1
+				else return 0
 			})
 
 		return res.json(classToClass(nextAppointments))
