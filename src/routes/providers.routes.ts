@@ -18,5 +18,10 @@ providersRouter.get(
 	ensureAuthenticated, 
 	providerAvailableHoursController.index
 )
+providersRouter.post(
+	'/:provider_id/available_day_hours', 
+	ensureAuthenticated, 
+	providerAvailableHoursController.create
+)
 
 export { providersRouter }

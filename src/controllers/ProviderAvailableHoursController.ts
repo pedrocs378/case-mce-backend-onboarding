@@ -2,11 +2,62 @@ import { Request, Response } from "express";
 import { ObjectID } from "mongodb";
 import { classToClass } from "class-transformer";
 import { getMongoRepository } from "typeorm";
-import { getDate, getHours, getMonth, getYear, isAfter } from "date-fns";
+import { getDate, getHours, getMonth, getYear, isAfter, startOfDay, isWeekend } from "date-fns";
 
 import { Appointment } from "../database/schemas/Appointment";
+import { User } from "../database/schemas/User";
+import { AvailabilityHours } from "../database/schemas/AvailabilityHours";
+
+type AvailableHourData = {
+	hour: number
+	available: boolean
+}
+
+type BodyParams = {
+	available_hours: AvailableHourData[]
+	date: string
+}
 
 export class ProviderAvailableHoursController {
+
+	public async create(req: Request, res: Response): Promise<Response> {
+		const { provider_id } = req.params
+		const { available_hours, date } = req.body as BodyParams
+
+		const usersRepository = getMongoRepository(User)
+		const availabilityHoursRepository = getMongoRepository(AvailabilityHours)
+
+		const provider = await usersRepository.findOne(provider_id)
+
+		if (!provider) {
+			return res.status(400).send('Provider não encontrado')
+		}
+
+		const existingAvailableHours = await availabilityHoursRepository.findOne({
+			where: {
+				date: startOfDay(new Date(date)),
+				provider_id: provider.id
+			}
+		})
+
+		if (existingAvailableHours) {
+			existingAvailableHours.available_hours = available_hours
+
+			await availabilityHoursRepository.save(existingAvailableHours)
+
+			return res.json(existingAvailableHours)
+		} else {
+			const availabilityHour = availabilityHoursRepository.create({
+				provider_id: provider.id,
+				available_hours,
+				date: startOfDay(new Date(date))
+			})
+	
+			await availabilityHoursRepository.save(availabilityHour)
+	
+			return res.json(availabilityHour)
+		}
+	}
 
 	public async index(req: Request, res: Response): Promise<Response> {
 		const { provider_id } = req.params
@@ -19,6 +70,7 @@ export class ProviderAvailableHoursController {
 		}
 
 		const appointmentsRepository = getMongoRepository(Appointment)
+		const availableHoursRepository = getMongoRepository(AvailabilityHours)
 
 		const appointmentsData = await appointmentsRepository.find({
 			where: {
@@ -52,6 +104,11 @@ export class ProviderAvailableHoursController {
 				}
 			})
 
+		const existingAvailableHours = await availableHoursRepository.findOne({
+			provider_id: new ObjectID(provider_id),
+			date: new Date(date.year, date.month - 1, date.day)
+		})
+
 		const hourStart = 8
 
 		const eachHourArray = Array.from({ length: 12 }, (_, index) => index + hourStart)
@@ -63,9 +120,19 @@ export class ProviderAvailableHoursController {
 				return getHours(appointment.date) === hour
 			})
 
+			const isAvailableHour = existingAvailableHours 
+				? existingAvailableHours.available_hours
+					.find(existingHour => existingHour.hour === hour)?.available ?? true
+				: true
+
 			const compareDate = new Date(date.year, date.month - 1, date.day, hour)
 
-			const available = !hasAppointmentinHour && isAfter(compareDate, currentDate)
+			const available = 
+				!hasAppointmentinHour && 
+				isAfter(compareDate, currentDate) &&
+				!isWeekend(compareDate) &&
+				isAvailableHour &&
+				hour !== 12
 
 			return {
 				hour,
