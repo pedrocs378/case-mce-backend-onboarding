@@ -7,31 +7,47 @@ import { isAfter, isBefore } from "date-fns";
 import { User } from "../database/schemas/User";
 import { Appointment } from "../database/schemas/Appointment";
 
+type QueryParams = {
+	name: string
+}
+
 export class ProvidersController {
 
 	public async index(req: Request, res: Response): Promise<Response> {
-		const { id: user_id } = req.user
+		try {
+			const { id: user_id } = req.user
+			const { name } = req.query as QueryParams
 
-		const usersRepository = getMongoRepository(User)
+			const usersRepository = getMongoRepository(User)
 
-		const providers = await usersRepository.find({
-			where: {
-				$and: [
-					{
-						_id: {
-							$ne: new ObjectID(user_id)
+			const providers = await usersRepository.find({
+				where: {
+					$and: [
+						{
+							_id: {
+								$ne: new ObjectID(user_id)
+							},
+						},
+						{
+							accessLevel: {
+								$in: ['personal']
+							}
 						}
-					},
-					{
-						accessLevel: {
-							$in: ['personal']
+					],
+					...(name && name.trim() ? {
+						$text: {
+							$search: name
 						}
-					}
-				]
-			}
-		})
+					} : {})
+				}
+			})
 
-		return res.json(classToClass(providers))
+			return res.json(classToClass(providers))
+		} catch (err) {
+			console.error(err)
+
+			return res.status(500)
+		}
 	}
 	public async show(req: Request, res: Response): Promise<Response> {
 		const { provider_id } = req.params
